@@ -10,27 +10,38 @@ class DatabaseManager:
         self.conn = pyodbc.connect(
                 'DRIVER={SQL Server};'
                 'SERVER=localhost\\SQLEXPRESS04;' 
-                'DATABASE=Mydatabase;'
+                'DATABASE=DataBasePh3;'
                 'Trusted_Connection=yes;'
             )
         self.cursor = self.conn.cursor()
     def disconnect(self):
         self.conn.close()
 
-    def execute(self, query, params=()):
-        try:
-            self.cursor.execute(query, params)  # params makes it safe
-            self.conn.commit()
-            return True  # success signal
 
-        except Exception as e:
-            self.conn.rollback()  # undo if something went wrong
-            print(f"Query failed: {e}")
-            return False
 
-    def fetch(self, query, params=()):
-        self.cursor.execute(query, params)
-        return self.cursor.fetchall()
+    """Automatically connects, fetches data, and cleans up."""
+    def query_fetch(self, sql, params=()):
+            self.connect()
+            try:
+                self.cursor.execute(sql, params)
+                return self.cursor.fetchall()
+            finally:
+                self.disconnect()
 
-    def getAll(self):
-        return self.fetch("SELECT * FROM customers")
+
+
+    """Automatically connects, saves changes, and cleans up."""
+    def query_execute(self, sql, params=()):
+            self.connect()
+            try:
+                self.cursor.execute(sql, params)
+                self.conn.commit()
+                return True
+            except Exception as e:
+                print(f"Error: {e}")
+                self.conn.rollback()
+                return False
+            finally:
+                self.disconnect()
+
+  
