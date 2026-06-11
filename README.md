@@ -136,6 +136,6 @@ python GUI.py
 
 ## 👤 Author
 
-Made by **[Your Name]**  
+Made by Omar Tharwat  
 📧 omartharwat244@gmail.com  
 🔗 https://www.linkedin.com/in/omar-tharwat-064502340
